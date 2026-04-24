@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "RS_Character.generated.h"
 
+class ARS_BaseWeapon;
 class UWidgetComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -20,8 +21,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:	
+	void SetOverlappingWeapon(ARS_BaseWeapon* InWeapon);
 	
 protected:
 	
@@ -33,6 +36,13 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
 	TObjectPtr<UWidgetComponent> OverHeadWidgetComponent;
+	
+	UPROPERTY(ReplicatedUsing=OnRep_OverlappingWeapon)
+	TObjectPtr<ARS_BaseWeapon> OverlappingWeapon;
+	
+private:
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon);
 
 
 };

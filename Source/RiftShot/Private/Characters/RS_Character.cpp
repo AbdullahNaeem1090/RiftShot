@@ -4,6 +4,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Weapon/RS_BaseWeapon.h"
 
 ARS_Character::ARS_Character()
 {
@@ -34,7 +36,38 @@ void ARS_Character::BeginPlay()
 void ARS_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+
+void ARS_Character::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME_CONDITION(ARS_Character,OverlappingWeapon,COND_OwnerOnly);
+}
+
+void ARS_Character::SetOverlappingWeapon(ARS_BaseWeapon* InWeapon)
+{
+	// no need to check because the InWeapon is allowed to be Null
+	if (IsLocallyControlled())
+	{
+		if (InWeapon)
+		{
+			InWeapon->SetPickUpWidgetVisibility(true);	
+		}
+		else if (OverlappingWeapon)
+		{
+			OverlappingWeapon->SetPickUpWidgetVisibility(false);
+		}
+	}
+	
+	OverlappingWeapon=InWeapon;
+	
+}
+
+void ARS_Character::OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon)
+{
+	if (LastWeapon) LastWeapon->SetPickUpWidgetVisibility(false);
+	if (OverlappingWeapon) OverlappingWeapon->SetPickUpWidgetVisibility(true);
 }
 
 
