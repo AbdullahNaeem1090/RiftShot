@@ -84,6 +84,21 @@ void ARS_Character::ToggleCrouch()
 	bIsCrouched ? UnCrouch() : Crouch();
 }
 
+bool ARS_Character::IsAiming() const
+{
+	return (CombatComponent && CombatComponent->bIsAiming);
+}
+
+void ARS_Character::StartAiming()
+{
+	if (CombatComponent) CombatComponent->SetAiming(true);
+}
+
+void ARS_Character::StopAiming()
+{
+	if (CombatComponent) CombatComponent->SetAiming(false);
+}
+
 void ARS_Character::OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon)
 {
 	if (LastWeapon) LastWeapon->SetPickUpWidgetVisibility(false);

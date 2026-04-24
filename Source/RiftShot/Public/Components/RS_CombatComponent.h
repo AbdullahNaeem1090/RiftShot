@@ -16,12 +16,15 @@ class RIFTSHOT_API URS_CombatComponent : public UActorComponent
 public:
 	URS_CombatComponent();
 	friend class ARS_Character;
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
+	void SetAiming(bool bValue);
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(bool bValue);
 	void Equip(ARS_BaseWeapon* InWeapon);
 	
 	UPROPERTY(VisibleAnywhere)
@@ -29,5 +32,8 @@ private:
 	
 	UPROPERTY(Replicated,VisibleAnywhere)
 	TObjectPtr<ARS_BaseWeapon> EquippedWeapon;
+	
+	UPROPERTY(Replicated)
+	bool bIsAiming=false;
 	
 };

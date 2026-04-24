@@ -7,9 +7,12 @@
 
 URS_CombatComponent::URS_CombatComponent()
 {
-
 	PrimaryComponentTick.bCanEverTick = false;
+}
 
+void URS_CombatComponent::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void URS_CombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -19,14 +22,16 @@ void URS_CombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
 	DOREPLIFETIME(URS_CombatComponent, EquippedWeapon);
 }
 
-
-void URS_CombatComponent::BeginPlay()
+void URS_CombatComponent::SetAiming(bool bValue)
 {
-	Super::BeginPlay();
-
-	
+	bIsAiming=bValue;
+	ServerSetAiming(bValue);
 }
 
+void URS_CombatComponent::ServerSetAiming_Implementation(bool bValue)
+{
+	bIsAiming=bValue;
+}
 
 void URS_CombatComponent::Equip(ARS_BaseWeapon* InWeapon)
 {

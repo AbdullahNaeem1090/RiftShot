@@ -38,6 +38,8 @@ void ARS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ARS_PlayerController::HandleJump);
 	EnhancedInputComponent->BindAction(IA_Equip,ETriggerEvent::Started,this,&ARS_PlayerController::HandleEquip);
 	EnhancedInputComponent->BindAction(IA_Crouch,ETriggerEvent::Started,this,&ARS_PlayerController::HandleCrouch);
+	EnhancedInputComponent->BindAction(IA_Aim,ETriggerEvent::Started,this,&ARS_PlayerController::HandleAimPress);
+	EnhancedInputComponent->BindAction(IA_Aim,ETriggerEvent::Completed,this,&ARS_PlayerController::HandleAimReleased);
 }
 
 ARS_Character* ARS_PlayerController::GetRSCharacter()
@@ -87,6 +89,16 @@ void ARS_PlayerController::HandleEquip(const FInputActionValue& Value)
 void ARS_PlayerController::HandleCrouch(const FInputActionValue& Value)
 {
 	if (GetRSCharacter()) RSCharacter->ToggleCrouch();
+}
+
+void ARS_PlayerController::HandleAimPress(const FInputActionValue& Value)
+{
+	if (GetRSCharacter()) RSCharacter->StartAiming();
+}
+
+void ARS_PlayerController::HandleAimReleased(const FInputActionValue& Value)
+{
+	if (GetRSCharacter()) RSCharacter->StopAiming();
 }
 
 

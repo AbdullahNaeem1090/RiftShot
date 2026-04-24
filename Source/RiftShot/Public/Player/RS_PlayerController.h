@@ -28,6 +28,8 @@ protected:
 	void HandleJump(const FInputActionValue& Value);
 	void HandleEquip(const FInputActionValue& Value);
 	void HandleCrouch(const FInputActionValue& Value);
+	void HandleAimPress(const FInputActionValue& Value);
+	void HandleAimReleased(const FInputActionValue& Value);
 	
 private:
 	ARS_Character* GetRSCharacter();
@@ -55,4 +57,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Crouch;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Aim;
 };

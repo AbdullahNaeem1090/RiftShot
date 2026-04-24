@@ -23,6 +23,9 @@ public:
 	bool IsWeaponEquipped() const;
 	void EquipPressed();
 	void ToggleCrouch();
+	bool IsAiming() const;
+	void StartAiming();
+	void StopAiming();
 	
 	
 protected:

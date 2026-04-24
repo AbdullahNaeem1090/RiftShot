@@ -34,4 +34,6 @@ void URS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsWeaponEquipped=Character->IsWeaponEquipped();
 	
 	bIsCrouched=Character->bIsCrouched;
+	
+	bIsAiming=Character->IsAiming();
 }
