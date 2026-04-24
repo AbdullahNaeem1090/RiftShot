@@ -29,10 +29,6 @@ void ARS_PlayerController::BeginPlay()
 
 void ARS_PlayerController::SetupInputComponent()
 {
-	check(IA_Move);
-	check(IA_Look);
-	check(IA_Jump);
-	
 	Super::SetupInputComponent();
 	
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
@@ -41,6 +37,16 @@ void ARS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(IA_Look,ETriggerEvent::Triggered,this,&ARS_PlayerController::HandleLook);
 	EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ARS_PlayerController::HandleJump);
 	EnhancedInputComponent->BindAction(IA_Equip,ETriggerEvent::Started,this,&ARS_PlayerController::HandleEquip);
+	EnhancedInputComponent->BindAction(IA_Crouch,ETriggerEvent::Started,this,&ARS_PlayerController::HandleCrouch);
+}
+
+ARS_Character* ARS_PlayerController::GetRSCharacter()
+{
+	if (!IsValid(RSCharacter))
+	{
+		RSCharacter=Cast<ARS_Character>(GetCharacter());
+	}
+	return RSCharacter;
 }
 
 void ARS_PlayerController::HandleMove(const FInputActionValue& Value)
@@ -78,11 +84,9 @@ void ARS_PlayerController::HandleEquip(const FInputActionValue& Value)
 	if (GetRSCharacter()) RSCharacter->EquipPressed();
 }
 
-ARS_Character* ARS_PlayerController::GetRSCharacter()
+void ARS_PlayerController::HandleCrouch(const FInputActionValue& Value)
 {
-	if (!IsValid(RSCharacter))
-	{
-		RSCharacter=Cast<ARS_Character>(GetCharacter());
-	}
-	return RSCharacter;
+	if (GetRSCharacter()) RSCharacter->ToggleCrouch();
 }
+
+

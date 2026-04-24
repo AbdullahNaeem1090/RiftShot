@@ -20,7 +20,10 @@ public:
 	ARS_Character();
 	virtual void Tick(float DeltaTime) override;
 	void SetOverlappingWeapon(ARS_BaseWeapon* InWeapon);
+	bool IsWeaponEquipped() const;
 	void EquipPressed();
+	void ToggleCrouch();
+	
 	
 protected:
 	virtual void BeginPlay() override;
@@ -30,6 +33,9 @@ protected:
 private:
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerEquipPressed();
 	
 protected:
 	

@@ -3,6 +3,7 @@
 #include "Characters/RS_Character.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 
 ARS_BaseWeapon::ARS_BaseWeapon()
 {
@@ -42,6 +43,13 @@ void ARS_BaseWeapon::BeginPlay()
 	
 }
 
+void ARS_BaseWeapon::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ARS_BaseWeapon,WeaponState);
+}
+
 void ARS_BaseWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -62,8 +70,34 @@ void ARS_BaseWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 }
 
+void ARS_BaseWeapon::OnRep_WeaponState()
+{
+	switch (WeaponState)
+	{
+	case EWeaponState::Ews_Equipped:
+		PickUpWidget->SetVisibility(false);
+		break;
+	default:
+		break;
+	}
+}
+
 void ARS_BaseWeapon::SetPickUpWidgetVisibility(bool Visible)
 {
 	if (PickUpWidget) PickUpWidget->SetVisibility(Visible);
 }
+
+void ARS_BaseWeapon::SetWeaponState(EWeaponState NewState)
+{
+	WeaponState=NewState;
+	switch (WeaponState)
+	{
+	case EWeaponState::Ews_Equipped:
+		SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		PickUpWidget->SetVisibility(false);
+	default:
+		break;
+	}
+}
+
 

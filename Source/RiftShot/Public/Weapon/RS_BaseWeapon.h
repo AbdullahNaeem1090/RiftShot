@@ -27,17 +27,23 @@ class RIFTSHOT_API ARS_BaseWeapon : public AActor
 
 public:
 	ARS_BaseWeapon();
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	void SetPickUpWidgetVisibility(bool Visible);
-	FORCEINLINE void SetWeaponState(EWeaponState NewState){ WeaponState=NewState; }
+	void SetWeaponState(EWeaponState NewState);
 	
 protected:
 	virtual void BeginPlay() override;
+	
 	UFUNCTION()
 	virtual void OnSphereOverlap( UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
+	
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex);
+	
+	UFUNCTION()
+	void OnRep_WeaponState();
 	
 private:
 
@@ -52,6 +58,6 @@ protected:
 	TObjectPtr<UWidgetComponent> PickUpWidget;
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(ReplicatedUsing=OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
 	EWeaponState WeaponState;
 };

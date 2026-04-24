@@ -5,7 +5,6 @@
 
 #include "Characters/RS_Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 
 void URS_AnimInstance::NativeInitializeAnimation()
 {
@@ -32,5 +31,7 @@ void URS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 	bIsAccelerating=Character->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 	
+	bIsWeaponEquipped=Character->IsWeaponEquipped();
 	
+	bIsCrouched=Character->bIsCrouched;
 }

@@ -1,6 +1,7 @@
 
 #include "Components/RS_CombatComponent.h"
 #include "Characters/RS_Character.h"
+#include "Net/UnrealNetwork.h"
 #include "Weapon//RS_BaseWeapon.h"
 
 
@@ -9,6 +10,13 @@ URS_CombatComponent::URS_CombatComponent()
 
 	PrimaryComponentTick.bCanEverTick = false;
 
+}
+
+void URS_CombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(URS_CombatComponent, EquippedWeapon);
 }
 
 
@@ -36,6 +44,6 @@ void URS_CombatComponent::Equip(ARS_BaseWeapon* InWeapon)
 	
 	EquippedWeapon->SetWeaponState(EWeaponState::Ews_Equipped);
 	EquippedWeapon->SetOwner(Character);
-	EquippedWeapon->SetPickUpWidgetVisibility(false);
+	
 }
 

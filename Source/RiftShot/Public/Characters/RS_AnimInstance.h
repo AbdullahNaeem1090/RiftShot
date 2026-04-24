@@ -27,4 +27,10 @@ private:
 	
 	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
 	float Speed;
+	
+	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
+	bool bIsWeaponEquipped;
+	
+	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
+	bool bIsCrouched;
 };

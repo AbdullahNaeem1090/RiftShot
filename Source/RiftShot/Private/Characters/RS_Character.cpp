@@ -29,6 +29,7 @@ ARS_Character::ARS_Character()
 	
 	bUseControllerRotationYaw=false;
 	GetCharacterMovement()->bOrientRotationToMovement=true;
+	GetCharacterMovement()->NavAgentProps.bCanCrouch=true;
 
 }
 
@@ -64,15 +65,34 @@ void ARS_Character::SetOverlappingWeapon(ARS_BaseWeapon* InWeapon)
 	OverlappingWeapon=InWeapon;
 }
 
+bool ARS_Character::IsWeaponEquipped() const
+{
+	return (CombatComponent && CombatComponent->EquippedWeapon);
+}
+
 void ARS_Character::EquipPressed()
 {
-	if (CombatComponent && HasAuthority()) CombatComponent->Equip(OverlappingWeapon);
+	if (CombatComponent )
+	{
+		if (HasAuthority()) CombatComponent->Equip(OverlappingWeapon);
+		else ServerEquipPressed();
+	}
+}
+
+void ARS_Character::ToggleCrouch()
+{
+	bIsCrouched ? UnCrouch() : Crouch();
 }
 
 void ARS_Character::OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon)
 {
 	if (LastWeapon) LastWeapon->SetPickUpWidgetVisibility(false);
 	if (OverlappingWeapon) OverlappingWeapon->SetPickUpWidgetVisibility(true);
+}
+
+void ARS_Character::ServerEquipPressed_Implementation()
+{
+	if (CombatComponent) CombatComponent->Equip(OverlappingWeapon);
 }
 
 
