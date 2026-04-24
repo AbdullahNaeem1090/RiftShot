@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "RS_PlayerController.generated.h"
 
+class ARS_Character;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -24,12 +25,17 @@ protected:
 	
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);	
-	void HandleJump(const FInputActionValue& Value);	
+	void HandleJump(const FInputActionValue& Value);
+	void HandleEquip(const FInputActionValue& Value);
 	
 private:
-
+	ARS_Character* GetRSCharacter();
 
 protected:
+	
+	UPROPERTY()
+	ARS_Character* RSCharacter;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 	
@@ -41,6 +47,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Jump;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Equip;
 
 
 };

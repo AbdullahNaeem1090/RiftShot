@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "RS_Character.generated.h"
 
+class URS_CombatComponent;
 class ARS_BaseWeapon;
 class UWidgetComponent;
 class USpringArmComponent;
@@ -18,13 +19,17 @@ class RIFTSHOT_API ARS_Character : public ACharacter
 public:
 	ARS_Character();
 	virtual void Tick(float DeltaTime) override;
-
+	void SetOverlappingWeapon(ARS_BaseWeapon* InWeapon);
+	void EquipPressed();
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
-public:	
-	void SetOverlappingWeapon(ARS_BaseWeapon* InWeapon);
+	virtual void PostInitializeComponents() override;
+	
+private:
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon);
 	
 protected:
 	
@@ -37,12 +42,10 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
 	TObjectPtr<UWidgetComponent> OverHeadWidgetComponent;
 	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
+	TObjectPtr<URS_CombatComponent> CombatComponent;
+	
 	UPROPERTY(ReplicatedUsing=OnRep_OverlappingWeapon)
 	TObjectPtr<ARS_BaseWeapon> OverlappingWeapon;
-	
-private:
-	UFUNCTION()
-	void OnRep_OverlappingWeapon(ARS_BaseWeapon* LastWeapon);
-
 
 };

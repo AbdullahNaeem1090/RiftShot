@@ -28,6 +28,7 @@ class RIFTSHOT_API ARS_BaseWeapon : public AActor
 public:
 	ARS_BaseWeapon();
 	void SetPickUpWidgetVisibility(bool Visible);
+	FORCEINLINE void SetWeaponState(EWeaponState NewState){ WeaponState=NewState; }
 	
 protected:
 	virtual void BeginPlay() override;

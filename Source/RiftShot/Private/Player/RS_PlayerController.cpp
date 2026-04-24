@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Player/RS_PlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Characters/RS_Character.h"
 #include "GameFramework/Character.h"
 
 ARS_PlayerController::ARS_PlayerController()
@@ -41,7 +40,7 @@ void ARS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(IA_Move,ETriggerEvent::Triggered,this,&ARS_PlayerController::HandleMove);
 	EnhancedInputComponent->BindAction(IA_Look,ETriggerEvent::Triggered,this,&ARS_PlayerController::HandleLook);
 	EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ARS_PlayerController::HandleJump);
-	
+	EnhancedInputComponent->BindAction(IA_Equip,ETriggerEvent::Started,this,&ARS_PlayerController::HandleEquip);
 }
 
 void ARS_PlayerController::HandleMove(const FInputActionValue& Value)
@@ -72,4 +71,18 @@ void ARS_PlayerController::HandleJump(const FInputActionValue& Value)
 	ACharacter* ControlledCharacter = GetCharacter();
 	if (!ControlledCharacter) return;
 	ControlledCharacter->Jump();
+}
+
+void ARS_PlayerController::HandleEquip(const FInputActionValue& Value)
+{
+	if (GetRSCharacter()) RSCharacter->EquipPressed();
+}
+
+ARS_Character* ARS_PlayerController::GetRSCharacter()
+{
+	if (!IsValid(RSCharacter))
+	{
+		RSCharacter=Cast<ARS_Character>(GetCharacter());
+	}
+	return RSCharacter;
 }
