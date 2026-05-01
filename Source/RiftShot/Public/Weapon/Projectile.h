@@ -1,0 +1,27 @@
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Projectile.generated.h"
+
+class UBoxComponent;
+
+UCLASS()
+class RIFTSHOT_API AProjectile : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AProjectile();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UBoxComponent> CollisionBox;
+};

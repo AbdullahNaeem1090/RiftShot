@@ -17,23 +17,33 @@ public:
 	URS_CombatComponent();
 	friend class ARS_Character;
 	
+	void FireButtonPressed(bool bPresses);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
+	
 private:
 	void SetAiming(bool bValue);
+	
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(bool bValue);
+	
+	UFUNCTION()
+	void OnRep_EquippedWeapon();
+	
 	void Equip(ARS_BaseWeapon* InWeapon);
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ARS_Character> Character;
 	
-	UPROPERTY(Replicated,VisibleAnywhere)
+	UPROPERTY(ReplicatedUsing=OnRep_EquippedWeapon)
 	TObjectPtr<ARS_BaseWeapon> EquippedWeapon;
 	
 	UPROPERTY(Replicated)
 	bool bIsAiming=false;
+	
+	bool bFireButtonPressed;
 	
 };

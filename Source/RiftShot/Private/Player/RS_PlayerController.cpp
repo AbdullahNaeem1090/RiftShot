@@ -36,6 +36,8 @@ void ARS_PlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(IA_Move,ETriggerEvent::Triggered,this,&ARS_PlayerController::HandleMove);
 	EnhancedInputComponent->BindAction(IA_Look,ETriggerEvent::Triggered,this,&ARS_PlayerController::HandleLook);
 	EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ARS_PlayerController::HandleJump);
+	EnhancedInputComponent->BindAction(IA_Fire,ETriggerEvent::Started,this,&ARS_PlayerController::HandleFireStart);
+	EnhancedInputComponent->BindAction(IA_Fire,ETriggerEvent::Completed,this,&ARS_PlayerController::HandleFireStop);
 	EnhancedInputComponent->BindAction(IA_Equip,ETriggerEvent::Started,this,&ARS_PlayerController::HandleEquip);
 	EnhancedInputComponent->BindAction(IA_Crouch,ETriggerEvent::Started,this,&ARS_PlayerController::HandleCrouch);
 	EnhancedInputComponent->BindAction(IA_Aim,ETriggerEvent::Started,this,&ARS_PlayerController::HandleAimPress);
@@ -79,6 +81,18 @@ void ARS_PlayerController::HandleJump(const FInputActionValue& Value)
 	ACharacter* ControlledCharacter = GetCharacter();
 	if (!ControlledCharacter) return;
 	ControlledCharacter->Jump();
+}
+
+void ARS_PlayerController::HandleFireStart(const FInputActionValue& Value)
+{
+	if (GetRSCharacter())
+		RSCharacter->FireStart();
+}
+
+void ARS_PlayerController::HandleFireStop(const FInputActionValue& Value)
+{
+	if (GetRSCharacter())
+		RSCharacter->FireStop();
 }
 
 void ARS_PlayerController::HandleEquip(const FInputActionValue& Value)

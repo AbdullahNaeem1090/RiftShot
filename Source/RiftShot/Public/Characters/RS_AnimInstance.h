@@ -2,38 +2,50 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Interfaces/RS_AnimInterface.h"
+#include "RS_Character.h"
 #include "RS_AnimInstance.generated.h"
 
+// Forward declaration (optional since already included, but fine practice)
 class ARS_Character;
 
 UCLASS()
-class RIFTSHOT_API URS_AnimInstance : public UAnimInstance
+class RIFTSHOT_API URS_AnimInstance 
+	: public UAnimInstance
+	, public IRS_AnimInterface
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	/** Interface Implementation */
+	virtual void UpdateGait_Implementation(ERS_Gait NewGait) override;
+
 protected:
+
+	/** UAnimInstance Overrides */
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-private:
-	
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess=true))
+
+protected:
+
+	/** Cached Character Reference */
+	UPROPERTY(BlueprintReadOnly, Category = "Character")
 	TObjectPtr<ARS_Character> Character;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	bool bIsAccelerating;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	bool bIsInAir;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	float Speed;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	bool bIsWeaponEquipped;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	bool bIsCrouched;
-	
-	UPROPERTY(BlueprintReadOnly,Category="Movement", meta=(AllowPrivateAccess=true))
-	bool bIsAiming;
+
+	/** Aim Data */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|Aim")
+	float Pitch = 0.f;
+
+	/** Ground Detection */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|Movement")
+	float DistanceToGround = 0.f;
+
+	/** State Flags */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|State")
+	bool bIsAiming = false;
+
+	/** Movement State */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|State")
+	ERS_Gait CurrentGait = ERS_Gait::Jog;
 };

@@ -10,6 +10,15 @@ URS_CombatComponent::URS_CombatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void URS_CombatComponent::FireButtonPressed(bool bPressed)
+{
+	bFireButtonPressed = bPressed;
+	if (Character && bFireButtonPressed)
+	{
+		Character->PlayFireMontage(bIsAiming);
+	}
+}
+
 void URS_CombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -33,6 +42,12 @@ void URS_CombatComponent::ServerSetAiming_Implementation(bool bValue)
 	bIsAiming=bValue;
 }
 
+void URS_CombatComponent::OnRep_EquippedWeapon()
+{
+	if (Character && EquippedWeapon)
+		Character->SetRotationMode(ERS_RotationMode::Strafe);
+}
+
 void URS_CombatComponent::Equip(ARS_BaseWeapon* InWeapon)
 {
 	if (!IsValid(Character)||!IsValid(InWeapon)) return;
@@ -42,13 +57,16 @@ void URS_CombatComponent::Equip(ARS_BaseWeapon* InWeapon)
 	const bool Attached = EquippedWeapon->AttachToComponent(
 		Character->GetMesh(),
 		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		FName(TEXT("RightHandSocket"))
+		FName(TEXT("WeaponSocketRight"))
 		);
 	
 	if (!Attached) return;
 	
+	Character->SetNewAnimLayer();
+	
 	EquippedWeapon->SetWeaponState(EWeaponState::Ews_Equipped);
 	EquippedWeapon->SetOwner(Character);
+	Character->SetRotationMode(ERS_RotationMode::Strafe);
 	
 }
 

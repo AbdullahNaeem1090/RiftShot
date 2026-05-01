@@ -26,6 +26,8 @@ protected:
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);	
 	void HandleJump(const FInputActionValue& Value);
+	void HandleFireStart(const FInputActionValue& Value);
+	void HandleFireStop(const FInputActionValue& Value);
 	void HandleEquip(const FInputActionValue& Value);
 	void HandleCrouch(const FInputActionValue& Value);
 	void HandleAimPress(const FInputActionValue& Value);
@@ -50,6 +52,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Jump;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Fire;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Equip;
