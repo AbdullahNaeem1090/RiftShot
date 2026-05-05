@@ -6,8 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "RS_BaseWeapon.generated.h"
 
+class AShellCasing;
+class AProjectile;
 class UWidgetComponent;
 class USphereComponent;
+class UAnimationAsset;
 
 
 UENUM(BlueprintType)
@@ -30,6 +33,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	void SetPickUpWidgetVisibility(bool Visible);
 	void SetWeaponState(EWeaponState NewState);
+	virtual void Fire(FVector TargetLocation);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -45,7 +49,8 @@ protected:
 	UFUNCTION()
 	void OnRep_WeaponState();
 	
-private:
+public:
+	
 
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
@@ -57,7 +62,18 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> PickUpWidget;
 	
-private:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAnimationAsset>  FireAnimation;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AProjectile>  ProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AShellCasing>  CasingClass;
+	
 	UPROPERTY(ReplicatedUsing=OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
 	EWeaponState WeaponState;
+
+	
+
 };

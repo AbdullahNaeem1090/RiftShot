@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Weapon/Casing/ShellCasing.h"
 
 ARS_BaseWeapon::ARS_BaseWeapon()
 {
@@ -97,6 +98,27 @@ void ARS_BaseWeapon::SetWeaponState(EWeaponState NewState)
 		PickUpWidget->SetVisibility(false);
 	default:
 		break;
+	}
+}
+
+void ARS_BaseWeapon::Fire(FVector TargetLocation) 
+{
+	if (WeaponState!=EWeaponState::Ews_Equipped) return ;
+	
+	SkeletalMeshComponent->PlayAnimation(FireAnimation,false);
+	
+	if (CasingClass)
+	{
+		const FTransform SocketTransform=SkeletalMeshComponent->GetSocketTransform(FName("CaseEject"));
+			
+		if (UWorld* World = GetWorld())
+		{
+			World->SpawnActor<AShellCasing>(
+			CasingClass,
+			SocketTransform.GetLocation(),
+			SocketTransform.GetRotation().Rotator()
+			);
+		}
 	}
 }
 

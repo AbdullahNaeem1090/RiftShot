@@ -195,7 +195,6 @@ void ARS_Character::OnRep_AnimLayerChanged()
 	GetMesh()->LinkAnimClassLayers(CurrentLayer);
 }
 
-
 void ARS_Character::ServerEquipPressed_Implementation()
 {
 	if (CombatComponent) CombatComponent->Equip(OverlappingWeapon);
@@ -233,7 +232,6 @@ void ARS_Character::ApplyGaitToAnimInstance()
 		}
 	}
 }
-
 
 float ARS_Character::GetGroundDistance() const
 {

@@ -19,10 +19,19 @@ public:
 	
 	void FireButtonPressed(bool bPresses);
 	
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
+	UFUNCTION(server, reliable)
+	void ServerFire(const FVector_NetQuantize& TargetLocation);
+	
+	UFUNCTION(NetMulticast,reliable)
+	void MulticastFire(const FVector_NetQuantize& TargetLocation);
+	
+	
+	void PerformLineTrace();
 	
 private:
 	void SetAiming(bool bValue);
@@ -45,5 +54,8 @@ private:
 	bool bIsAiming=false;
 	
 	bool bFireButtonPressed;
+	
+	FHitResult TraceHitResult;
+	
 	
 };
