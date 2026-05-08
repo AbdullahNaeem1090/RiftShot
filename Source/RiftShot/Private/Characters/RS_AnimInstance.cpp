@@ -1,6 +1,7 @@
 
 #include "Characters/RS_AnimInstance.h"
 #include "Characters/RS_Character.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "UObject/ObjectMacros.h"
 
 // Initialize 
@@ -23,6 +24,17 @@ void URS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Pitch = Character->IsLocallyControlled() ? Character->GetBaseAimRotation().Pitch : Character->AimPitch ;
 	bIsAiming = Character->IsAiming();
 	DistanceToGround=Character->DistanceToGround;
+	
+	if (Character->IsLocallyControlled())
+	{
+		const FVector StartLocation = Character->RightHandSocketLocation();
+		const FVector EndLocation = Character->GetHitTargetLocation();
+		RightHandRotation = UKismetMathLibrary::FindLookAtRotation(
+			StartLocation, EndLocation
+			);
+	}
+	
+	
 }
 
 // Interface

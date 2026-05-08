@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CrossHairInteract.h"
 #include "RS_Character.generated.h"
 
 /* ============================= */
@@ -37,7 +38,7 @@ enum class ERS_Gait : uint8
 // RS_Character Class               
 
 UCLASS()
-class RIFTSHOT_API ARS_Character : public ACharacter
+class RIFTSHOT_API ARS_Character : public ACharacter,public ICrossHairInteract
 {
     GENERATED_BODY()
 
@@ -80,6 +81,10 @@ public:
 
     bool IsWeaponEquipped() const;
     bool IsAiming() const;
+    FVector RightHandSocketLocation() const;
+    UFUNCTION(BlueprintCallable)
+    FVector GetHitTargetLocation() const;
+    UCameraComponent* GetCameraComponent() {return CameraComponent;}
 
     /* ============================= */
     // Replication Variables (Public Read)
@@ -172,5 +177,8 @@ protected:
 
     float GetGroundDistance() const;
     
+    void HideCameraIfCharacterClose();
 
+    UPROPERTY(EditAnywhere)
+    float CameraThreshold = 180.f;
 };

@@ -40,6 +40,9 @@ protected:
 	/** Ground Detection */
 	UPROPERTY(BlueprintReadOnly, Category = "Animation|Movement")
 	float DistanceToGround = 0.f;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|Movement")
+	FRotator RightHandRotation ;
 
 	/** State Flags */
 	UPROPERTY(BlueprintReadOnly, Category = "Animation|State")

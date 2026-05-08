@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "RS_CombatComponent.generated.h"
 
+class ARS_PlayerController;
+class ARS_HUD;
 class ARS_BaseWeapon;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -18,11 +20,13 @@ public:
 	friend class ARS_Character;
 	
 	void FireButtonPressed(bool bPresses);
+	FORCEINLINE FVector GetTargetLocation() const { return HitTargetLocation; };
 	
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual  void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION(server, reliable)
 	void ServerFire(const FVector_NetQuantize& TargetLocation);
@@ -36,6 +40,8 @@ protected:
 private:
 	void SetAiming(bool bValue);
 	
+	void SetHudCrossHairs(float DeltaTime);
+	
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(bool bValue);
 	
@@ -44,8 +50,14 @@ private:
 	
 	void Equip(ARS_BaseWeapon* InWeapon);
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	TObjectPtr<ARS_Character> Character;
+	
+	UPROPERTY()
+	TObjectPtr<ARS_HUD> HUD;
+	
+	UPROPERTY()
+	TObjectPtr<ARS_PlayerController> Controller;
 	
 	UPROPERTY(ReplicatedUsing=OnRep_EquippedWeapon)
 	TObjectPtr<ARS_BaseWeapon> EquippedWeapon;
@@ -57,5 +69,18 @@ private:
 	
 	FHitResult TraceHitResult;
 	
+	FVector HitTargetLocation;
+	
+	float DefaultFOV;
+	float CurrentFOV;
+	void  UpdateFOV(float DeltaTime);
+	void Fire();
+
+	FTimerHandle FireTimer;
+	bool bCanFire = true;
+
+	void StartFireTimer();
+	void FireTimerFinished();
 	
 };
+

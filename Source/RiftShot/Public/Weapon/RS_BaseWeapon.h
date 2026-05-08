@@ -11,6 +11,7 @@ class AProjectile;
 class UWidgetComponent;
 class USphereComponent;
 class UAnimationAsset;
+class UTexture2D;
 
 
 UENUM(BlueprintType)
@@ -34,6 +35,7 @@ public:
 	void SetPickUpWidgetVisibility(bool Visible);
 	void SetWeaponState(EWeaponState NewState);
 	virtual void Fire(FVector TargetLocation);
+	USkeletalMeshComponent* GetWeaponMesh(){return SkeletalMeshComponent;}
 	
 protected:
 	virtual void BeginPlay() override;
@@ -50,7 +52,33 @@ protected:
 	void OnRep_WeaponState();
 	
 public:
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsCenter;
 	
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsLeft;
+	
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsRight;
+	
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsTop;
+	
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsBottom;
+	
+	UPROPERTY(EditAnywhere)
+	float ZoomFOV=30.f;
+	
+	UPROPERTY(EditAnywhere)
+	float ZoomInterpSpeed=10;
+	
+	
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float FireDelay = .15f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	bool bAutomatic = true;
 
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)

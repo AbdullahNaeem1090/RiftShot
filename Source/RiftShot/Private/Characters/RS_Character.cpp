@@ -14,6 +14,8 @@ ARS_Character::ARS_Character()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
+    GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
+	
 	SpringArmComponent=CreateDefaultSubobject<USpringArmComponent>(FName("SpringArmComp"));
 	SpringArmComponent->SetupAttachment(GetMesh());
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -35,8 +37,12 @@ ARS_Character::ARS_Character()
 	PreviousGait=ERS_Gait::Jog;
 	CurrentGait=ERS_Gait::Jog;
 	
+	SetNewAnimLayer();
+	
 	SetNetUpdateFrequency(66.f);
 	SetMinNetUpdateFrequency(33.f);
+	
+	
 
 }
 
@@ -44,8 +50,6 @@ void ARS_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SetNewAnimLayer();
-
 }
 
 void ARS_Character::Tick(float DeltaTime)
@@ -64,6 +68,8 @@ void ARS_Character::Tick(float DeltaTime)
 		}
 
 		Server_SetAimPitch(Pitch);
+		
+		HideCameraIfCharacterClose();
 	} //Pitch
 	
 }
@@ -82,6 +88,27 @@ void ARS_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	CombatComponent->Character=this;
+}
+
+void ARS_Character::HideCameraIfCharacterClose()
+{
+	if (!IsLocallyControlled()) return;
+	if ((CameraComponent->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)
+	{
+		GetMesh()->SetVisibility(false);
+		if (CombatComponent && CombatComponent->EquippedWeapon && CombatComponent->EquippedWeapon->GetWeaponMesh())
+		{
+			CombatComponent->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = true;
+		}
+	}
+	else
+	{
+		GetMesh()->SetVisibility(true);
+		if (CombatComponent && CombatComponent->EquippedWeapon && CombatComponent->EquippedWeapon->GetWeaponMesh())
+		{
+			CombatComponent->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = false;
+		}
+	}
 }
 
 void ARS_Character::SetOverlappingWeapon(ARS_BaseWeapon* InWeapon)
@@ -145,6 +172,24 @@ void ARS_Character::EquipPressed()
 bool ARS_Character::IsAiming() const
 {
 	return (CombatComponent && CombatComponent->bIsAiming);
+}
+
+FVector ARS_Character::RightHandSocketLocation() const
+{
+	if (GetMesh())
+	   return GetMesh()->GetSocketLocation(FName("WeaponSocketRight"));
+	 
+	return FVector::ZeroVector;
+}
+
+FVector ARS_Character::GetHitTargetLocation() const
+{
+	if (CombatComponent)
+	{
+		return CombatComponent->GetTargetLocation();
+	}
+	
+	return FVector::ZeroVector;
 }
 
 void ARS_Character::StartAiming()
